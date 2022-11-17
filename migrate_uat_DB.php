@@ -1,6 +1,18 @@
 <?php
-$old_db = 'emea_dev_243p2_20220812';
-$new_db = 'emea_m2_uat_243p2_20221006';
+/**
+ *  資料庫匯入後 將"舊資料庫"的設定搬到"新資料庫"
+ *  ex : 舊資料庫 emea_dev_243p2_20220812
+ *       新資料庫 emea_m2_uat_243p2_20221006
+ *
+ *  php ../dev/migrate_uat_DB.php emea_dev_243p2_20220812 emea_m2_uat_243p2_20221006
+ **/
+if( ! isset($argv[2]) ){
+    echo '請輸入 DB name';
+    exit;
+}
+
+$old_db = $argv[1];
+$new_db = $argv[2];
 
 // ==============================
 
