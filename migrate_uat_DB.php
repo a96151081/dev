@@ -31,6 +31,20 @@ if ($old_conn->connect_error
 
 // ==========
 //  core_config_data
+//      刪除 bcc 的 email
+// ==========
+$sql = 'DELETE FROM `core_config_data`  WHERE path like "%copy_to"';
+$new_conn->query($sql);
+
+// ==========
+//  core_config_data
+//      disable push order
+// ==========
+$sql = 'DELETE FROM `core_config_data` WHERE `path` = "sales/eop/enabled";';
+$new_conn->query($sql);
+
+// ==========
+//  core_config_data
 //      frontend url
 //      elasticsearch setting
 //      admin url
@@ -59,7 +73,6 @@ $res = $old_conn->query($sql);
 $old_core_config_data = $res->fetch_all(MYSQLI_ASSOC);
 
 foreach( $old_core_config_data as $row ){
-    
     $sql = 'INSERT INTO `core_config_data`
                 (`scope`, `scope_id`, `path`,`value`)
             VALUES
@@ -81,7 +94,6 @@ $res = $old_conn->query($sql);
 $old_setup_module = $res->fetch_all(MYSQLI_ASSOC);
 
 foreach( $old_setup_module as $row ){
-    
     $sql = 'INSERT INTO `setup_module`
                 (`module`, `schema_version`, `data_version`)
             VALUES
@@ -92,7 +104,7 @@ foreach( $old_setup_module as $row ){
 // ==========
 
 // 修正 搜尋某些關鍵字後 會跳轉到正式機的問題
-$sql = 'update search_query SET redirect = "" where where redirect != ""';
+$sql = 'update search_query SET redirect = "" where where redirect != "";';
 $new_conn->query($sql);
 
 $new_conn->close();
