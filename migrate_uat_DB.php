@@ -14,6 +14,10 @@ if( ! isset($argv[2]) ){
 $old_db = $argv[1];
 $new_db = $argv[2];
 
+$email = 'a9615108@gmail.com';
+$email_front = 'a9615108';
+$email_back = '@gmail.com';
+
 // ==============================
 
 $env = include('app/etc/env.php');
@@ -33,7 +37,7 @@ if ($old_conn->connect_error
 //  core_config_data
 //      刪除 bcc 的 email
 // ==========
-$sql = 'DELETE FROM `core_config_data`  WHERE path like "%copy_to"';
+$sql = 'DELETE FROM `core_config_data`  WHERE path like "%copy_to";';
 $new_conn->query($sql);
 
 // ==========
@@ -102,9 +106,23 @@ foreach( $old_setup_module as $row ){
 }
 
 // ==========
-
 // 修正 搜尋某些關鍵字後 會跳轉到正式機的問題
 $sql = 'update search_query SET redirect = "" where where redirect != "";';
+$new_conn->query($sql);
+
+// ==========
+// 避免 dev 寄信
+// ==========
+// 訂單成立 7 天後寄送的意見調查
+$sql = 'update acer_survey set sent_status =1;';
+$new_conn->query($sql);
+
+// 將 customer 的 email 全改成自己的 避免寄錯信
+$sql = 'update `customer_entity` SET `email` = CONCAT("'.$email_front.'+",entity_id ,"'.$email_back.'");';
+$new_conn->query($sql);
+
+// 將 訂單 的 email 全改成自己的 避免寄錯信
+$sql = 'update `sales_order` set `customer_email` = "'.$email.'";';
 $new_conn->query($sql);
 
 $new_conn->close();
